@@ -1,4 +1,12 @@
+/**
+ * @description router
+ */
+
 import App from '../App.vue';
+// home 页
+import Home from '../container/Home.vue';
+// 宝可梦的 18 种属性
+import Attributes from '../container/Attributes';
 
 export default [
   {
@@ -6,8 +14,12 @@ export default [
     component: App,
     children: [
       {
-        path: '',
-        component: (r) => require.ensure([], () => r(require('../container/Home')), 'home'),
+        path: '/',
+        component: Home,
+      },
+      {
+        path: '/attributes',
+        component: Attributes,
       },
     ],
   },
