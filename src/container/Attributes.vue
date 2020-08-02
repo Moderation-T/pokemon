@@ -1,9 +1,10 @@
 <template>
   <div>
-    <!-- 调用v-chart组件:渲染折线图 -->
-    <button @click="changeType(2)">效果超群</button>
+    <!-- 调用v-chart组件:渲染graph -->
     <button @click="changeType(0)">效果不好</button>
-    <v-chart :options="type===0?myGraph0:myGraph2"></v-chart>
+    <button @click="changeType(2)">效果超群</button>
+    <button @click="changeType('all')">全部</button>
+    <v-chart :options="myGraph"></v-chart>
   </div>
 </template>
 
@@ -22,8 +23,6 @@
 <script>
 import ECharts from "vue-echarts";
 // 按需引入不同的图表需要的依赖
-import "echarts/lib/chart/line";
-import "echarts/lib/component/polar";
 import "echarts/lib/chart/graph";
 
 // 所需宝可梦属性相克的数据
@@ -64,12 +63,24 @@ export default {
     const links0 = [];
     // 效果超群
     const links2 = [];
+    // 所有 linksAll
+    const linksAll = [];
     for (const key in attributesJson) {
       if ({}.hasOwnProperty.call(attributesJson, key)) {
         const Attribute = attributesJson[key];
         for (const _key in Attribute) {
           if ({}.hasOwnProperty.call(Attribute, _key)) {
             const element = Attribute[_key];
+            if (element.length !== 0) {
+              element.map((target) => {
+                linksAll.push({
+                  source: key,
+                  target,
+                  name: _key,
+                  lineStyle: { color: lineColors[_key] },
+                });
+              });
+            }
             if (_key === "x2") {
               if (element.length !== 0) {
                 element.map((target) => {
@@ -99,116 +110,72 @@ export default {
     }
 
     return {
+      /*0-效果不好 2-效果超群 all-全部 */
+
       type: 0,
-      // 效果不好
-      myGraph0: {
-        title: {
-          text: "知识图谱",
-        },
-        // legend: [
-        //   {
-        //     // selectedMode: 'single',
-        //     data: categories.map(x => x.name)
-        //     // icon: 'circle'
-        //   }
-        // ],
-        series: [
-          {
-            type: "graph",
-            layout: "force",
-            symbolSize: 58,
-            draggable: true,
-            roam: true,
-            focusNodeAdjacency: true,
-            // categories: categories,
-            edgeSymbol: ["", "arrow"],
-            // edgeSymbolSize: [80, 10],
-            // edgeLabel: {
-            //   normal: {
-            //     show: true,
-            //     textStyle: {
-            //       fontSize: 30,
-            //     },
-            //     formatter(x) {
-            //       return x.data.name;
-            //     },
-            //   },
-            // },
-            lineStyle: {
-              normal: {
-                width: 2,
-                shadowColor: "none",
-                curveness: 0.1,
-              },
-            },
-            label: {
-              show: true,
-            },
-            force: {
-              repulsion: 2000,
-              edgeLength: 120,
-            },
-
-            data: nodes,
-            links: links0,
-          },
-        ],
+      links: {
+        all: linksAll,
+        0: links0,
+        2: links2,
       },
-      // 效果超群
-      myGraph2: {
-        title: {
-          text: "知识图谱",
-        },
-        // legend: [
-        //   {
-        //     // selectedMode: 'single',
-        //     data: categories.map(x => x.name)
-        //     // icon: 'circle'
-        //   }
-        // ],
-        series: [
-          {
-            type: "graph",
-            layout: "force",
-            symbolSize: 58,
-            draggable: true,
-            roam: true,
-            focusNodeAdjacency: true,
-            // categories: categories,
-            edgeSymbol: ["", "arrow"],
-            // edgeSymbolSize: [80, 10],
-            // edgeLabel: {
-            //   normal: {
-            //     show: true,
-            //     textStyle: {
-            //       fontSize: 30,
-            //     },
-            //     formatter(x) {
-            //       return x.data.name;
-            //     },
-            //   },
-            // },
-            lineStyle: {
-              normal: {
-                width: 2,
-                shadowColor: "none",
-                curveness: 0.1,
-              },
-            },
-            label: {
-              show: true,
-            },
-            force: {
-              repulsion: 2000,
-              edgeLength: 120,
-            },
-
-            data: nodes,
-            links: links2,
-          },
-        ],
-      },
+      nodes,
     };
+  },
+  computed: {
+    myGraph() {
+      return {
+        title: {
+          text: "知识图谱",
+        },
+        // legend: [
+        //   {
+        //     // selectedMode: 'single',
+        //     data: categories.map(x => x.name)
+        //     // icon: 'circle'
+        //   }
+        // ],
+        series: [
+          {
+            type: "graph",
+            layout: "force",
+            symbolSize: 58,
+            draggable: true,
+            roam: true,
+            focusNodeAdjacency: true,
+            // categories: categories,
+            edgeSymbol: ["", "arrow"],
+            // edgeSymbolSize: [80, 10],
+            // edgeLabel: {
+            //   normal: {
+            //     show: true,
+            //     textStyle: {
+            //       fontSize: 30,
+            //     },
+            //     formatter(x) {
+            //       return x.data.name;
+            //     },
+            //   },
+            // },
+            lineStyle: {
+              normal: {
+                width: 2,
+                shadowColor: "none",
+                curveness: 0.1,
+              },
+            },
+            label: {
+              show: true,
+            },
+            force: {
+              repulsion: 2000,
+              edgeLength: 120,
+            },
+            data: this.nodes,
+            links: this.links[this.type],
+          },
+        ],
+      };
+    },
   },
 
   methods: {
