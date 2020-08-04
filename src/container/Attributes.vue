@@ -1,9 +1,10 @@
 <template>
   <div>
-    <!-- 调用v-chart组件:渲染graph -->
     <button @click="changeType(0)">效果不好</button>
     <button @click="changeType(2)">效果超群</button>
     <button @click="changeType('all')">全部</button>
+    <span>{{type}}</span>
+    <!-- 调用v-chart组件:渲染graph -->
     <v-chart :options="myGraph"></v-chart>
   </div>
 </template>
@@ -34,29 +35,30 @@ export default {
     "v-chart": ECharts,
   },
   data() {
-    const nodesColors = [
-      "#9199A1",
-      "#CD406A",
-      "#8EA8DE",
-      "#A96AC8",
-      "#D87844",
-      "#C5B78B",
-      "#91C02E",
-      "#9F9FEC",
-      "#5A8DA1",
-      "#FE9C54",
-      "#77BBFF",
-      "#62BB5A",
-      "#F4D23C",
-      "#F97178",
-      "#73CEBF",
-      "#0A6DC2",
-      "#5A5365",
-    ];
-    const lineColors = { x0: "black", "x1/2": "red", x2: "green" };
+    const colors = {
+      一般: "#9199A1",
+      格斗: "#CD406A",
+      飞行: "#8EA8DE",
+      毒: "#A96AC8",
+      地面: "#D87844",
+      岩石: "#C5B78B",
+      虫: "#91C02E",
+      幽灵: "#9F9FEC",
+      钢: "#5A8DA1",
+      火: "#FE9C54",
+      水: "#77BBFF",
+      草: "#62BB5A",
+      电: "#F4D23C",
+      超能力: "#F97178",
+      冰: "#73CEBF",
+      龙: "#0A6DC2",
+      恶: "#5A5365",
+      妖精:'#FBCBFB'
+    };
+    // const lineColors = { x0: "black", "x1/2": "red", x2: "green" };
     const nodes = Object.keys(attributesJson).map((item, index) => ({
       name: item,
-      itemStyle: { color: nodesColors[index] },
+      itemStyle: { color: colors[item] },
       category: index,
     }));
     // 效果不好 / 无效
@@ -77,7 +79,7 @@ export default {
                   source: key,
                   target,
                   name: _key,
-                  lineStyle: { color: lineColors[_key] },
+                  lineStyle: { color: colors[key] },
                 });
               });
             }
@@ -88,7 +90,7 @@ export default {
                     source: key,
                     target,
                     name: _key,
-                    lineStyle: { color: lineColors[_key] },
+                    lineStyle: { color: colors[key] },
                   });
                 });
               }
@@ -99,7 +101,7 @@ export default {
                     source: key,
                     target,
                     name: _key,
-                    lineStyle: { color: lineColors[_key] },
+                    lineStyle: { color: colors[key] },
                   });
                 });
               }
@@ -111,7 +113,6 @@ export default {
 
     return {
       /*0-效果不好 2-效果超群 all-全部 */
-
       type: 0,
       links: {
         all: linksAll,
@@ -144,7 +145,7 @@ export default {
             focusNodeAdjacency: true,
             // categories: categories,
             edgeSymbol: ["", "arrow"],
-            // edgeSymbolSize: [80, 10],
+            edgeSymbolSize: [80, 10],
             // edgeLabel: {
             //   normal: {
             //     show: true,
@@ -158,7 +159,7 @@ export default {
             // },
             lineStyle: {
               normal: {
-                width: 2,
+                width: 5,
                 shadowColor: "none",
                 curveness: 0.1,
               },
